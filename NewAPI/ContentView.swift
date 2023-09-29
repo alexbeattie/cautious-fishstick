@@ -10,29 +10,46 @@ import Combine
 import AVKit
 
 struct Listing: Codable {
-    let value: [Value]
+    let odataContext: String?
+    let odataNextLink: String?
+    let odataCount: Int?
+    let value: [Value]?
+    
+    enum CodingKeys: String, CodingKey {
+           case odataContext = "@odata.context"
+           case odataNextLink = "@odata.nextLink"
+           case odataCount = "@odata.count"
+           case value = "value"
+       }
+
 }
+
+//extension Listing {
+//    enum CodingKeys: String, CodingKey {
+//        case OdataNextLink = "@odata.nextLink"
+//    }
+//}
 struct Value: Codable {
     var BuyerAgentEmail: String?
     var ClosePrice: Int?
-    var CoListAgentFullName: String
-    var ListAgentFullName: String
+    var CoListAgentFullName: String?
+    var ListAgentFullName: String?
     var Latitude: Double?
     var Longitude: Double?
     var ListPrice: Int?
     var BedroomsTotal: Int?
     var LotSizeAcres: Double?
-    var MlsStatus: String
+    var MlsStatus: String?
     var OffMarketDate: String?
     var OnMarketDate: String?
     var PendingTimestamp: String?
-    var Media: [Media]
-    var ListingKey: String
-    var UnparsedAddress: String
-    var PostalCode: String
-    var StateOrProvince: String
-    var City: String
-    var BathroomsTotalDecimal: Float
+    var Media: [Media]?
+    var ListingKey: String?
+    var UnparsedAddress: String?
+    var PostalCode: String?
+    var StateOrProvince: String?
+    var City: String?
+    var BathroomsTotalInteger: Int?
     var Model: String?
     var BuyerOfficeAOR: String?
     var VirtualTourURLUnbranded: String?
@@ -40,9 +57,17 @@ struct Value: Codable {
     var BuyerAgentURL: String?
     var ListAgentURL: String?
     var BuildingAreaTotal: Int?
+    var BuilderName: String?
+    var BuyerAgentMlsId: String?
+    var BuyerOfficePhone: String?
+    var CloseDate: String?
+    var ListingContractDate: String?
+    var ListingId: String?
+    var LivingArea: Int?
+    
 }
 struct Media: Codable {
-    var MediaCategory: String
+    var MediaCategory: String?
     var MediaURL: String?
 }
 
@@ -76,29 +101,67 @@ class ListingPublisherViewModel: ObservableObject {
 //    @MainActor
     @Published var results = [Value]()
     @Published var listings = [Listing]()
-    func loadData() async {
-        guard let url = URL(string: "http://lireadgroup.com/sparkDataTwo.json") else {
-            print("Invalid URL")
-            return
-        }
+    init() {
+//        var request = URLRequest(url: URL(string:"https://replication.sparkapi.com/Reso/OData/Property?$filter=ListPrice gt 10000000&$orderby=ListPrice desc&$expand=Media&$skip=10&$top=10&$count=true")!,timeoutInterval: Double.infinity)
+        //ALL MY LISTINGS Closed / Pending / Sold / Active
+        var request = URLRequest(url: URL(string: "https://replication.sparkapi.com/Reso/OData/Property?%24filter=(ListPrice%20ge%201000000)%20and%20(MlsStatus%20eq%20%27Active%27)&%24orderby=ListPrice%20desc&%24expand=Media&%24skip=10&%24count=true")!,timeoutInterval: Double.infinity)
+
+//        var request = URLRequest(url: URL(string: "https://replication.sparkapi.com/Reso/OData/Property")!,timeoutInterval: Double.infinity)
+        request.addValue("Bearer 783gnjjn82x92n9lbvpr1r0c1", forHTTPHeaderField: "Authorization")
+        request.httpMethod = "GET"
         
-        do {
+        URLSession.shared.dataTask(with: request) { (data, url, error) in
             
-            let (data, _) = try await URLSession.shared.data(from: url)
-            print(data)
-            if let decodedResponse = try? JSONDecoder().decode(Listing.self, from: data) {
-//                DispatchQueue.main.async {
-                self.results = decodedResponse.value
-                
-            }
-            print(results)
-            // more code to come
+                guard let data = data else { return }
+                do  {
+                    let decodedResponse = try JSONDecoder().decode(Listing.self, from: data)
+                    print(decodedResponse)
+                    DispatchQueue.main.async {
+                        self.results = decodedResponse.value ?? []
+                    }
+                    
+                } catch {
+                    print("Failed to decode \(error)")
+
+                }
             
-        } catch {
-            print("Invalid data")
-        }
-        
+        }.resume()
+
     }
+
+    
+    
+//    func loadData() async {
+//        guard let url = URL(string: "http://lireadgroup.com/sparkDataTwo.json") else {
+//            print("Invalid URL")
+//            return
+//        }
+//
+//
+//
+//
+//
+//
+//
+//
+//        do {
+//
+//
+//            let (data, _) = try await URLSession.shared.data(from: url)
+//            print(data)
+//            if let decodedResponse = try? JSONDecoder().decode(Listing.self, from: data) {
+////                DispatchQueue.main.async {
+//                self.results = decodedResponse.value
+//
+//            }
+//            print(results)
+//            // more code to come
+//
+//        } catch {
+//            print("Invalid data")
+//        }
+//
+//    }
 //    init()  {
 //        Task {
 //            await loadData()
@@ -179,15 +242,15 @@ struct ContentView: View {
                                 }
                               
                             }
-                        
-                        
-//                    }
-//                }
+
             }
         }
-        .task {
-            await vm.loadData()
-        }
+      
+//        .task {
+//            await vm.loadData()
+//        }
+        
+        
     }
 }
 
@@ -196,16 +259,16 @@ struct HomeRow: View {
     let listing:Value
     var body: some View {
         VStack () {
-            AsyncImage(url: URL(string: listing.Media.first?.MediaURL ?? "")) { image in
-                image
-                    .resizable()
-                    .scaledToFill()
-                    .frame(width:400, height:200)
-                
-            } placeholder: {
-                ProgressView()
-            }
-            .frame(width: 400, height: 250)
+//            AsyncImage(url: URL(string: listing.Media?.first?.MediaURL ?? "")) { image in
+//                image
+//                    .resizable()
+//                    .scaledToFill()
+//                    .frame(width:400, height:200)
+//                
+//            } placeholder: {
+//                ProgressView()
+//            }
+//            .frame(width: 400, height: 250)
 
 //            KFImage(URL(string:listing.Media.first?.MediaURL ?? ""))
 //                .resizable()
