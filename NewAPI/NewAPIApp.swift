@@ -12,7 +12,7 @@ struct NewAPIApp: App {
     var body: some Scene {
         WindowGroup {
          
-            ContentView()
+            ContentView(listing: .init(), topListing: .init(odataContext: "", odataNextLink: "", odataCount: 0, value: nil))
             
         }
     }

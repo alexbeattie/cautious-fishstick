@@ -15,6 +15,8 @@ struct RowData: View {
         
         ZStack {
             VStack (alignment: .leading, spacing: 12) {
+                Text(listing.ListAgentFullName ?? "")
+
                 AsyncImage(url: URL(string: listing.Media?.first?.MediaURL ?? "")) { image in
                     image
                         .resizable()
@@ -113,7 +115,7 @@ struct RowData: View {
 
                         Divider()
                     }
-//                    Link("List Agent", destination: URL(string: results.odataNextLink ?? "alex")!)
+//                    Link("List Agent", destination: URL(string: li ?? "alex")!)
 
                     .padding(.horizontal)
                 }
@@ -125,6 +127,7 @@ struct RowData: View {
 struct RowData_Previews: PreviewProvider {
     static var previews: some View {
 //        RowData()
-        HomeRow(listing: Value(CoListAgentFullName: "Alex", ListAgentFullName: "Beattie", MlsStatus: "Open", Media: [], ListingKey: "1221", UnparsedAddress: "123 Anywhere Usa", PostalCode: "91221", StateOrProvince: "CA", City: "Thousand Oaks", BathroomsTotalInteger: 0, BuilderName: "Sherwood", BuyerAgentMlsId: "123",BuyerOfficePhone: "1",CloseDate: "99", ListingContractDate: "22",LivingArea: 123))
+    
+        RowData(listing: Value(CoListAgentFullName: "Alex", ListAgentFullName: "Beattie", MlsStatus: "Open", Media: [], ListingKey: "1221", UnparsedAddress: "123 Anywhere Usa", PostalCode: "91221", StateOrProvince: "CA", City: "Thousand Oaks", BathroomsTotalInteger: 0, BuilderName: "Sherwood", BuyerAgentMlsId: "123",BuyerOfficePhone: "1",CloseDate: "99", ListingContractDate: "22",LivingArea: 123))
     }
 }

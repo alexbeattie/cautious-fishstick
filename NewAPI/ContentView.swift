@@ -10,6 +10,7 @@ import Combine
 import AVKit
 
 struct Listing: Codable {
+    
     let odataContext: String?
     let odataNextLink: String?
     let odataCount: Int?
@@ -24,11 +25,7 @@ struct Listing: Codable {
 
 }
 
-//extension Listing {
-//    enum CodingKeys: String, CodingKey {
-//        case OdataNextLink = "@odata.nextLink"
-//    }
-//}
+
 struct Value: Codable {
     var BuyerAgentEmail: String?
     var ClosePrice: Int?
@@ -98,36 +95,65 @@ func loadData() async {
 //}
 @MainActor
 class ListingPublisherViewModel: ObservableObject {
-//    @MainActor
+    
     @Published var results = [Value]()
     @Published var listings = [Listing]()
-    init() {
-//        var request = URLRequest(url: URL(string:"https://replication.sparkapi.com/Reso/OData/Property?$filter=ListPrice gt 10000000&$orderby=ListPrice desc&$expand=Media&$skip=10&$top=10&$count=true")!,timeoutInterval: Double.infinity)
-        //ALL MY LISTINGS Closed / Pending / Sold / Active
-        var request = URLRequest(url: URL(string: "https://replication.sparkapi.com/Reso/OData/Property?%24filter=(ListPrice%20ge%201000000)%20and%20(MlsStatus%20eq%20%27Active%27)&%24orderby=ListPrice%20desc&%24expand=Media&%24skip=10&%24count=true")!,timeoutInterval: Double.infinity)
-
-//        var request = URLRequest(url: URL(string: "https://replication.sparkapi.com/Reso/OData/Property")!,timeoutInterval: Double.infinity)
-        request.addValue("Bearer 783gnjjn82x92n9lbvpr1r0c1", forHTTPHeaderField: "Authorization")
-        request.httpMethod = "GET"
+    
+    
+    func fetchProducts() async {
         
-        URLSession.shared.dataTask(with: request) { (data, url, error) in
-            
-                guard let data = data else { return }
-                do  {
-                    let decodedResponse = try JSONDecoder().decode(Listing.self, from: data)
-                    print(decodedResponse)
-                    DispatchQueue.main.async {
-                        self.results = decodedResponse.value ?? []
-                    }
-                    
-                } catch {
-                    print("Failed to decode \(error)")
 
-                }
+        //create the new url
+        let url = URL(string: "https://replication.sparkapi.com/Reso/OData/Property?$filter=(ListPrice ge 1000000) and (MlsStatus eq 'Active')&$orderby=ListPrice desc&$expand=Media&$skip=10&$count=true".addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? "")
+        
+        //create a new urlRequest passing the url
+        var request = URLRequest(url: url!)
+        request.httpMethod = "GET"
+        request.addValue("Bearer \(TOKEN)", forHTTPHeaderField: "Authorization")
+        do {
             
-        }.resume()
-
+            //run the request and retrieve both the data and the response of the call
+            let (data, _) = try await URLSession.shared.data(for: request)
+            
+            //checks if there are errors regarding the HTTP status code and decodes using the passed struct
+            if let fetchedData = try? JSONDecoder().decode(Listing.self, from: data) {
+//                print(fetchedData)
+                self.results = fetchedData.value ?? []
+                self.listings = [fetchedData]
+                print(listings)
+            }
+        } catch {
+            print("invalid data")
+        }
     }
+}
+
+//    init() {
+//        //ALL MY LISTINGS Closed / Pending / Sold / Active
+//        var request = URLRequest(url: URL(string: "https://replication.sparkapi.com/Reso/OData/Property?%24filter=(ListPrice%20ge%201000000)%20and%20(MlsStatus%20eq%20%27Active%27)&%24orderby=ListPrice%20desc&%24expand=Media&%24skip=10&%24count=true")!,timeoutInterval: Double.infinity)
+//
+//        request.addValue("Bearer 783gnjjn82x92n9lbvpr1r0c1", forHTTPHeaderField: "Authorization")
+//        request.httpMethod = "GET"
+//
+//        URLSession.shared.dataTask(with: request) { (data, url, error) in
+//
+//                guard let data = data else { return }
+//                do  {
+//                    let decodedResponse = try JSONDecoder().decode(Listing.self, from: data)
+//                    print(decodedResponse)
+//                    DispatchQueue.main.async {
+//                        self.results = decodedResponse.value ?? []
+//
+//                    }
+//
+//                } catch {
+//                    print("Failed to decode \(error)")
+//
+//                }
+//
+//        }.resume()
+//
+//    }
 
     
     
@@ -199,151 +225,108 @@ class ListingPublisherViewModel: ObservableObject {
 //        }
 //    }
    
-}
+
 
 struct ContentView: View {
-//    @State var listing: Listing
-
+    
     @StateObject var vm = ListingPublisherViewModel()
-//    var listing = Value
-//    @State private var sortOrder = [KeyPathComparator(\(vm.listing.MlsStatus)]
-//    @State private var selection: vm.listing.ListingKey
-                                                       
+
+    let listing: Value
+    let topListing: Listing
+
+ 
     var body: some View {
-        NavigationView {
+
+
+        VStack(alignment: .leading, spacing: 8.0) {
+            NavigationView {
             ScrollView {
-                ForEach(vm.results, id: \.ListingKey) { listing in
-
-//                    LazyVStack {
-//                            VStack {
+          
+                ForEach(vm.results, id: \.ListingKey)  { listing  in
+                    VStack(alignment: .leading) {
+                        AsyncImage(url: URL(string: listing.Media?.first?.MediaURL ?? "")) { image in
+                            image
+                                .resizable()
+                                .scaledToFill()
+                                .frame(width:400, height:200)
+                                .clipped()
+                            
+                        } placeholder: {
+                            ProgressView()
+                        }
+//                        Text(listing.ListingId ?? "")
+                        ZStack {
+                            VStack (alignment: .leading, spacing: 12) {
                                 
-                                /*      Use Layout Priority of maxHeight: .infinitey
-                                 Text(listing.MlsStatus).layoutPriority(1)
-                                 */
-                    
-                                NavigationLink {
-                                    PopDestDetailsView(listing: listing)
-//                                    AsyncImage(url: URL(string: listing.Media.first?.MediaURL ?? "")) { image in
-//                                        image
-//                                            .resizable()
-//                                            .scaledToFill()
-//                                            .frame(width:400, height:200)
-//
-//                                    } placeholder: {
-//                                        ProgressView()
-//                                    }
-//                                    .frame(width: 400, height: 250)
-//                                    Text(listing.PublicRemarks ?? "")
-//
-//                                    Text(listing.City)
-                                    Spacer()
-                                } label: {
-                                    HomeRow(listing: listing)
-                                }
-                              
-                            }
+                                HStack {
+                                    VStack{
+                                        Text(listing.UnparsedAddress ?? "")
+                                            .font(.system(size: 16, weight: .regular))
+                                            .foregroundColor(Color(.white))
+                                        HStack {
+//                                            Text("\(listing.Model ?? "Not Named")")
+//                                                .font(.system(size: 14, weight: .regular))
+//                                                .foregroundColor(Color(.gray))
+                                            Text(listing.MlsStatus ?? "")
+                                                .font(.system(size: 14, weight: .heavy))
+                                                .foregroundColor(Color(.white))
+                                            Text("\(listing.BuyerOfficeAOR ?? "")")
+                                                .font(.system(size: 12, weight: .heavy))
+                                        }
+                                        
+                                        HStack {
 
+                                                      
+                                            Text("$")
+//                                            Text(String(listing.ListPrice)).formatted(.currency(code: "USD"))
+//                                            Label(String(listing.ListPrice ?? 0), systemImage: "house")
+                                            Text(Date.now.addingTimeInterval(600), style: .time)
+                                            
+                                            //.redacted(reason: .placeholder)
+                                            
+                                            Text(String(listing.ListPrice ?? 0))
+                                                .font(.system(size: 14, weight: .regular))
+                                                .foregroundColor(Color(.gray))
+                                        }
+                                        .padding(.horizontal)
+                                    }
+                                    
+                                }
+                                .padding(.horizontal)
+                            }
+                        }
+                    }
+                    
+                }
+                //TODO
+                //Show next page of listings
+                ForEach(vm.listings, id: \.odataContext) { topListing in
+                    Link ("next", destination: URL(string: topListing.odataNextLink!)!)
+                }
             }
         }
-      
-//        .task {
-//            await vm.loadData()
-//        }
-        
-        
+
+          
+        }
+        .task {
+            await vm.fetchProducts()
+        }
+        .background(.darkBackground)
+        .navigationTitle(topListing.odataNextLink ?? "")
+        .navigationBarTitleDisplayMode(.inline)
+
     }
+
 }
 
-   
-struct HomeRow: View {
-    let listing:Value
-    var body: some View {
-        VStack () {
-//            AsyncImage(url: URL(string: listing.Media?.first?.MediaURL ?? "")) { image in
-//                image
-//                    .resizable()
-//                    .scaledToFill()
-//                    .frame(width:400, height:200)
-//                
-//            } placeholder: {
-//                ProgressView()
-//            }
-//            .frame(width: 400, height: 250)
 
-//            KFImage(URL(string:listing.Media.first?.MediaURL ?? ""))
-//                .resizable()
-//                .scaledToFill()
-//                .cornerRadius(6)
-//                .frame(width:400, height:200)
-//                .clipped()
-
-            RowData(listing: listing)
-                
-
-        }
-//        .edgesIgnoringSafeArea(.top)
-
-        .padding(.bottom)
-        .listStyle(PlainListStyle())
-        }
-    }
-//        ScrollView {
-//
-//            VStack {
-//                Text("alex")
-//                Text(viewModel.listings[0])
-////                List(viewModel.listings, id: \.value.first?.ListingKey) { item in
-//////                    Text($0).font(.headline)
-////                    Text("alex")
-//////                    Text(item.value.first?.BuyerAgentEmail! ?? "")
-//////                        .font(.headline)
-////                }
-//            }
-//        }
-//        List(listings, id: \.ListingKey) { item in
-//            VStack(alignment: .leading) {
-//                Text(item.BuyerAgentEmail ?? "Alex")
-//                    .font(.headline)
-//            }
-//        }
-//        .onAppear {
-//            Task {
-//                try await loadData()
-//            }
-//        }
-        
-//    }
-      
-    
-
-//    func loadData() async throws -> Listing {
-//        let url = URL(string: "http://lireadgroup.com/sparkData.json")!
-//        let request = URLRequest(url: url)
-//        let (data, _) = try await URLSession.shared.data(for: request)
-//
-////          let decoder = JSONDecoder()
-////          let formatter = DateFormatter()
-////          formatter.dateFormat = "y-MM-dd"
-////          decoder.dateDecodingStrategy = .formatted(formatter)
-//
-//        let listing = try JSONDecoder().decode(Listing.self, from: data)
-//          print(listing)
-//          return listing
-//
-//}
-struct NavigationLazyView<Content: View>: View {
-    
-    let build: () -> Content
-    init(_ build: @autoclosure @escaping () -> Content) {
-        self.build = build
-    }
-    var body: Content {
-        build()
-    }
-}
 
 struct ContentView_Previews: PreviewProvider {
+    
+    
     static var previews: some View {
-        ContentView()
+        ContentView(listing: Value(CoListAgentFullName: "Alex", ListAgentFullName: "Beattie", MlsStatus: "Open", Media: [], ListingKey: "1221", UnparsedAddress: "123 Anywhere Usa", PostalCode: "91221", StateOrProvince: "CA", City: "Thousand Oaks", BathroomsTotalInteger: 0, BuilderName: "Sherwood", BuyerAgentMlsId: "123",BuyerOfficePhone: "1",CloseDate: "99", ListingContractDate: "22",LivingArea: 123), topListing: Listing(odataContext: "alex", odataNextLink: "alex", odataCount: 0, value: [Value].init()))
+
+            .preferredColorScheme(.dark)
     }
 }
