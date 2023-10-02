@@ -24,6 +24,7 @@ struct PopDestDetailsView: View {
 //            padding(.vertical)
 
             ScrollView(showsIndicators: false) {
+              
                 
                 AsyncImage(url: URL(string: listing.Media?.first?.MediaURL ?? "")) { image in
                     image
@@ -189,7 +190,7 @@ struct MapView: UIViewRepresentable {
 
 struct PopDetailsView_Previews: PreviewProvider {
     static var previews: some View {
-        PopDestDetailsView(listing: Value(CoListAgentFullName: "Alex", ListAgentFullName: "Beattie", MlsStatus: "Open", Media: [], ListingKey: "1221", UnparsedAddress: "123 Anywhere Usa", PostalCode: "91221", StateOrProvince: "CA", City: "Thousand Oaks", BathroomsTotalInteger: 0, BuilderName: "Sherwood", BuyerAgentMlsId: "123",BuyerOfficePhone: "1",CloseDate: "99", ListingContractDate: "22",LivingArea: 123))
+        PopDestDetailsView(listing: Value(CoListAgentFullName: "Alex", ListAgentFullName: "Beattie", MlsStatus: "Open", Media: [], ListingKey: "1221", UnparsedAddress: "123 Anywhere Usa", PostalCode: "91221", StateOrProvince: "CA", City: "Thousand Oaks", BathroomsTotalInteger: 0, BuilderName: "Sherwood", BuyerAgentMlsId: "123",BuyerOfficePhone: "1", LivingArea: 123))
 
     }
 }
