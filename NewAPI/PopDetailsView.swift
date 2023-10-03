@@ -10,12 +10,12 @@ import MapKit
 
 struct PopDestDetailsView: View {
     
-    let listing:Value
+    let value:[Value]
     
     @State var region:MKCoordinateRegion
-    init(listing: Value) {
-        self.listing = listing
-        self._region = State(initialValue: MKCoordinateRegion(center: .init(latitude: listing.Latitude ?? 0, longitude: listing.Longitude ?? 0), span: .init(latitudeDelta: 0.1, longitudeDelta: 0.1)))
+    init(value: Value) {
+        self.value = [value]
+        self._region = State(initialValue: MKCoordinateRegion(center: .init(latitude: value.Latitude ?? 0, longitude: value.Longitude ?? 0), span: .init(latitudeDelta: 0.1, longitudeDelta: 0.1)))
     }
     
     var body: some View {
@@ -26,7 +26,7 @@ struct PopDestDetailsView: View {
             ScrollView(showsIndicators: false) {
               
                 
-                AsyncImage(url: URL(string: listing.Media?.first?.MediaURL ?? "")) { image in
+                AsyncImage(url: URL(string: value.first?.Media?.first?.MediaURL ?? "")) { image in
                     image
                         .resizable()
                         .scaledToFill()
@@ -41,14 +41,14 @@ struct PopDestDetailsView: View {
                         height:200)
                     .clipped()
                 Divider()
-                    Text(listing.PublicRemarks ?? "")
+                Text(value.first?.PublicRemarks ?? "")
                         .lineLimit(nil)
                         .padding(.horizontal)
                     Divider()
                 
                     VStack {
                         
-                        Text("$\(listing.ListPrice ?? 0)")
+                        Text("$\(value.first?.ListPrice ?? 0)")
                            
                         
 //                        Spacer()
@@ -64,7 +64,7 @@ struct PopDestDetailsView: View {
 //                        Spacer()
 
                     }
-                MapView(listing: listing)
+                MapView(value: value)
                     .frame(height:200)
                     .edgesIgnoringSafeArea(.bottom)
 
@@ -84,7 +84,7 @@ struct PopDestDetailsView: View {
 struct MapView: UIViewRepresentable {
     
     
-    let listing: Value
+    let value:[Value]
 
     class Coordinator: NSObject, MKMapViewDelegate {
         var parent: MapView
@@ -144,13 +144,13 @@ struct MapView: UIViewRepresentable {
         view.delegate = context.coordinator
 
         let coordinate = CLLocationCoordinate2D(
-            latitude: listing.Latitude ?? 0, longitude: listing.Longitude ?? 0)
+            latitude: value.first?.Latitude ?? 0, longitude: value.first?.Longitude ?? 0)
         let span = MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
         let region = MKCoordinateRegion(center: coordinate, span: span)
         view.setRegion(region, animated: true)
         
-        let lat = listing.Latitude ?? 0
-        let lng = listing.Longitude ?? 0
+        let lat = value.first?.Latitude ?? 0
+        let lng = value.first?.Longitude ?? 0
             
         let pinDrop = CLLocationCoordinate2DMake(lat, lng)
         let pin = MKPointAnnotation()
@@ -164,9 +164,9 @@ struct MapView: UIViewRepresentable {
 //
 //            let pin = MKPointAnnotation()
 //            pin.coordinate = location
-            pin.title = listing.UnparsedAddress
+        pin.title = value.first?.UnparsedAddress
 //
-            let listPrice = listing.ListPrice
+            let listPrice = value.first?.ListPrice
             let numberFormatter = NumberFormatter()
                 numberFormatter.numberStyle = .decimal
 
@@ -190,7 +190,7 @@ struct MapView: UIViewRepresentable {
 
 struct PopDetailsView_Previews: PreviewProvider {
     static var previews: some View {
-        PopDestDetailsView(listing: Value(CoListAgentFullName: "Alex", ListAgentFullName: "Beattie", MlsStatus: "Open", Media: [], ListingKey: "1221", UnparsedAddress: "123 Anywhere Usa", PostalCode: "91221", StateOrProvince: "CA", City: "Thousand Oaks", BathroomsTotalInteger: 0, BuilderName: "Sherwood", BuyerAgentMlsId: "123",BuyerOfficePhone: "1", LivingArea: 123))
+        PopDestDetailsView(value: Value(CoListAgentFullName: "Alex", ListAgentFullName: "Beattie", MlsStatus: "Open", Media: [], ListingKey: "1221", UnparsedAddress: "123 Anywhere Usa", PostalCode: "91221", StateOrProvince: "CA", City: "Thousand Oaks", BathroomsTotalInteger: 0, BuilderName: "Sherwood", BuyerAgentMlsId: "123",BuyerOfficePhone: "1", LivingArea: 123))
 
     }
 }

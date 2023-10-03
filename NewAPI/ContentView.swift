@@ -187,7 +187,7 @@ struct ContentView: View {
                                                 showingSheet.toggle()
                                             }
                                             .sheet(isPresented: $showingSheet) {
-                                                PopDestDetailsView(listing: listing)
+                                                PopDestDetailsView(value: listing)
                                             }
                                             
                                             HStack {
@@ -237,6 +237,12 @@ struct ContentView: View {
 //                    Link ("next", destination: URL(string: topListing.odataNextLink!)!)
 //                }
             }
+            .navigationTitle("Listings")
+            .navigationBarTitleDisplayMode(.inline)
+
+            .background(.darkBackground)
+            .preferredColorScheme(.dark)
+
         }
 
           
@@ -244,9 +250,6 @@ struct ContentView: View {
         .task {
             await vm.fetchProducts()
         }
-        .background(.darkBackground)
-        .navigationTitle(topListing.value?.first?.City ?? "")
-        .navigationBarTitleDisplayMode(.inline)
     }
 
 }
