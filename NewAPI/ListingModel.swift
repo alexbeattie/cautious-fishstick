@@ -6,8 +6,33 @@
 //
 
 import Foundation
+//extension Listing: Equatable {
+//    static func == (lhs: Listing, rhs: Listing) -> Bool {
+//        return
+//            lhs.odataCount == rhs.odataCount &&
+//            lhs.odataNextLink == rhs.odataNextLink &&
+//            lhs.odataContext == rhs.odataContext
+//    }
+//}
+extension Listing: Equatable {}
 
 struct Listing: Codable {
+//    static func == (lhs: Listing, rhs: Listing) -> Bool {
+//        return lhs.odataCount == rhs.odataCount
+//    }
+//    
+//    var id = UUID()
+    
+//    var id: UUID()
+//    
+//    func hash(into hasher: inout Hasher) {
+//        hasher.combine(id)
+//    }
+//    static func == (lhs: Listing, rhs: Listing) -> Bool {
+//        return lhs.odataCount == rhs.odataCount
+//
+//    }
+//    
     
     let odataContext: String?
     let odataNextLink: String?
@@ -21,9 +46,13 @@ struct Listing: Codable {
            case value = "value"
        }
 }
-
-
+extension Value: Equatable {}
 struct Value: Codable {
+    static func == (lhs: Value, rhs: Value) -> Bool {
+        return lhs.id == rhs.id
+    }
+    
+    var id: String { return self.ListingKey ?? "" }
     var BuyerAgentEmail: String?
     var ClosePrice: Int?
     var CoListAgentFullName: String?
@@ -61,8 +90,12 @@ struct Value: Codable {
     var formattedLaunchDate: String {
         ListingContractDate?.formatted(date: .abbreviated, time: .omitted) ?? ""
     }
+    struct Media: Codable {
+//        var id = UUID()
+//        var id: String { return self.MediaCategory ?? "" }
+
+        var MediaCategory: String?
+        var MediaURL: String?
+    }
 }
-struct Media: Codable {
-    var MediaCategory: String?
-    var MediaURL: String?
-}
+

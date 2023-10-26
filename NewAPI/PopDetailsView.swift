@@ -7,78 +7,144 @@
 
 import SwiftUI
 import MapKit
+import Kingfisher
 
 struct PopDestDetailsView: View {
-    
+//    let images: Image!
     let value:[Value]
-    
+    let media: [Value.Media]
+//    let media:[Media]
+//    @StateObject var vm: ListingPublisherViewModel
+//    @EnvironmentObject private var model: ListingPublisherViewModel
     @State var region:MKCoordinateRegion
-    init(value: Value) {
+//    func addListing() {
+//        let listing = Media(MediaCategory: listings.first?.value?.first?.Media?.first?.MediaCategory, MediaURL: listings.first?.value?.first?.Media?.first?.MediaURL)
+//    func print(_: listing)
+//    }
+    init(value: Value, media: [Value.Media]) {
+        
+//        self.vm = ListingPublisherViewModel
         self.value = [value]
+//        self.media = [media]
+        self.media = value.Media.map { $0 }!
         self._region = State(initialValue: MKCoordinateRegion(center: .init(latitude: value.Latitude ?? 0, longitude: value.Longitude ?? 0), span: .init(latitudeDelta: 0.1, longitudeDelta: 0.1)))
     }
     
     var body: some View {
-
-     
-//            padding(.vertical)
-
-            ScrollView(showsIndicators: false) {
-              
-                
-                AsyncImage(url: URL(string: value.first?.Media?.first?.MediaURL ?? "")) { image in
-                    image
-                        .resizable()
-                        .scaledToFill()
-                        .frame(width:400, height:200)
+        ScrollView(showsIndicators: false) {
+//            VStack {
+//                ForEach(vm.media, id:\.MediaCategory) { image in
+//                    Text(image.MediaURL?.lowercased() ?? "")
+//                }
+//            }
+//            List(vm.media) { photo in
+//                Text(photo.MediaURL ?? "")
+//            }
+            
+            VStack {
+//                ListingImageCarouselView(images: images)
+                TabView {
+//                    List(media) {
+//                        images in
+//                        KFImage(URL(string: (images.MediaURL ?? "")))
+//                    }
                     
-                } placeholder: {
-                    ProgressView()
-                }
+//                    ForEach(Array(media.enumerated()), id: \.id) { _ in
+////                        print(media)
+//                    }
 
-                    
-                    .frame(width: 400,
-                        height:200)
-                    .clipped()
-                Divider()
-                Text(value.first?.PublicRemarks ?? "")
-                        .lineLimit(nil)
-                        .padding(.horizontal)
-                    Divider()
-                
-                    VStack {
+                    ForEach(media, id: \.MediaCategory) { images in
                         
-                        Text("$\(value.first?.ListPrice ?? 0)")
-                           
-                        
-//                        Spacer()
-                    }.font(.body)
-                
-                VStack {
-                    Text("Location")
-                }.padding()
-//                    .padding()
-//                Spacer()
-                    VStack {
-//
-//                        Spacer()
-
+                        KFImage(URL(string: (images.MediaURL ?? "")))
+                            .resizable()
+                            .scaledToFit()
                     }
-                MapView(value: value)
-                    .frame(height:200)
-                    .edgesIgnoringSafeArea(.bottom)
-
                     
+//                    ForEach(media, id: \.id) { images in
+//                        KFImage(URL(string: (images.MediaURL ?? "")))
+//                            .resizable()
+//                            .scaledToFit()
+//                    }
+//                    ForEach(value, id:\.ListingId) { image in
+//                        
+//                        
+//                        //                                            Text(value.first?.Media?.first?.MediaURL ?? "")
+//                        Text(media.first?.MediaURL ?? "")
+//                        
+////                    ForEach(media, id: \.MediaCategory) { mediastuff in
+////                        
+////                        
+////                        AsyncImage(url: URL(string: value.first?.Media?.first?.MediaURL ?? "")) { image in
+////                            image
+////                                .resizable()
+////                                .scaledToFill()
+////                                .frame(width:400, height:200)
+////                            
+////                        } placeholder: {
+////                            ProgressView()
+////                        }
+////                        
+////                        
+////                        Text(mediastuff.MediaURL ?? "")
+////                    }
+//                    Text(value.first?.Media?.first?.MediaURL ?? "")
+//                }
             }
+                .frame(height:320)
+                .tabViewStyle(.page)
+            }
+//            TabView {
+//                KFImage(URL(string: value.first?.Media?.first?.MediaURL ?? ""))
+//                KFImage(URL(string: value.first?.Media?.first?.MediaURL ?? ""))
+////                KFImage(URL(string: value.first. ?? ""))
+//
+////                AsyncImage(url: URL(string: value.first?.Media?.first?.MediaURL ?? "")) { image in
+////                    image
+////                        .resizable()
+////                        .scaledToFill()
+////                        .frame(width:400, height:200)
+////                    
+////                } placeholder: {
+////                    ProgressView()
+////                }
+//                
+////                .frame(width: 400,
+////                       height:200)
+////                .clipped()
+//            }
+            .frame(height:320)
+            .tabViewStyle(.page)
+            Divider()
+            VStack {
+                Text("aex")
+                    .font(.headline)
+                  .foregroundColor(Color(.green))
 
-//        .navigationBarTitle(listing.StandardFields.Photos?.first?.Name ?? "", displayMode: .inline)
-            .edgesIgnoringSafeArea(.bottom)
-
-//            .edgesIgnoringSafeArea([.bottom, .top])
-//            .navigationBarTitle("Editor", displayMode: .inline)
-
+            }
+            Text(value.first?.PublicRemarks ?? "")
+                .lineLimit(nil)
+                .padding(.horizontal)
+            
+            Divider()
+            
+            VStack {
+                Text("$\(value.first?.ListPrice ?? 0)")
+            }.font(.body)
+            
+            VStack {
+                Text(value.first?.Media?.first?.MediaURL ?? "nothing")
+            }.padding()
+                //  Spacer()
+            VStack {
+                // Spacer()
+            }
+            MapView(value: value)
+                .frame(height:200)
+                .edgesIgnoringSafeArea(.bottom)
+        }
+        .ignoresSafeArea()
+        .edgesIgnoringSafeArea(.bottom)
     }
-
 }
 
 struct MapView: UIViewRepresentable {
@@ -155,16 +221,14 @@ struct MapView: UIViewRepresentable {
         let pinDrop = CLLocationCoordinate2DMake(lat, lng)
         let pin = MKPointAnnotation()
         pin.coordinate = pinDrop
-        
-       
-
-        
-//            let coordinateRegion = MKCoordinateRegion.init(center: location, latitudinalMeters: 27500.0, longitudinalMeters: 27500.0)
+                       
+//            let coordinateRegion = MKCoordinateRegion.init(center: location, latitudinalMeters: 27500.0,
+//                  longitudinalMeters: 27500.0)
 //            mapView.setRegion(coordinateRegion, animated: true)
 //
 //            let pin = MKPointAnnotation()
 //            pin.coordinate = location
-        pin.title = value.first?.UnparsedAddress
+            pin.title = value.first?.UnparsedAddress
 //
             let listPrice = value.first?.ListPrice
             let numberFormatter = NumberFormatter()
@@ -175,22 +239,31 @@ struct MapView: UIViewRepresentable {
             pin.subtitle = subtitle
 //            pin.coordinate = pin
 //            view.addAnnotation(lat as! MKAnnotation)
-//        view.selectAnnotation(pin, animated: true)
-        view.addAnnotation(pin)
-//        view.addAnnotations(landmarks)
-
+            view.selectAnnotation(pin, animated: true)
+            view.addAnnotation(pin)
+//            view.addAnnotations(landmarks)
     }
     
     func makeUIView(context: Context) -> MKMapView {
         MKMapView(frame: .zero)
-        
-        
     }
 }
 
 struct PopDetailsView_Previews: PreviewProvider {
     static var previews: some View {
-        PopDestDetailsView(value: Value(CoListAgentFullName: "Alex", ListAgentFullName: "Beattie", MlsStatus: "Open", Media: [], ListingKey: "1221", UnparsedAddress: "123 Anywhere Usa", PostalCode: "91221", StateOrProvince: "CA", City: "Thousand Oaks", BathroomsTotalInteger: 0, BuilderName: "Sherwood", BuyerAgentMlsId: "123",BuyerOfficePhone: "1", LivingArea: 123))
-
+        PopDestDetailsView(value: Value(CoListAgentFullName: "Alex", 
+                                        ListAgentFullName: "Beattie",
+                                        MlsStatus: "Open",
+                                        Media: [],
+                                        ListingKey: "1221",
+                                        UnparsedAddress: "123 Anywhere Usa",
+                                        PostalCode: "91221",
+                                        StateOrProvince: "CA",
+                                        City: "Thousand Oaks",
+                                        BathroomsTotalInteger: 0,
+                                        BuilderName: "Sherwood",
+                                        BuyerAgentMlsId: "123",
+                                        BuyerOfficePhone: "1",
+                                        LivingArea: 123), media: [])
     }
 }

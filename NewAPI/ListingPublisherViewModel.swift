@@ -12,11 +12,18 @@ class ListingPublisherViewModel: ObservableObject {
     
     @Published var results = [Value]()
     @Published var listings = [Listing]()
-
+//    @Published var media = [Media]()
     
+
+//    func fetchImageData() async throws -> Data {
+//        let url = try await fetchDog().url
+//        let (data, _) = try await URLSession.shared.data(from: url)
+//        return data
+//    }
     func fetchProducts() async {
         
- 
+//        @State var media = [Media]()
+
         //create the new url
 //        let url = URL(string: "https://replication.sparkapi.com/Reso/OData/Property?$filter=(ListPrice ge 1000000) and (MlsStatus eq 'Active')&$orderby=ListPrice desc&$expand=Media&$skip=10&$count=true".addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? "")
         
@@ -39,11 +46,34 @@ class ListingPublisherViewModel: ObservableObject {
 
             //checks if there are errors regarding the HTTP status code and decodes using the passed struct
             if let fetchedData = try? decoder.decode(Listing.self, from: data) {
+//                , let moreData = try? decoder.decode(Media.self, from: data) {
 //                print(fetchedData)
 
                 self.results = fetchedData.value ?? []
                 self.listings = [fetchedData]
-                print(listings)
+//                self.media = [moreData]
+                
+//                ForEach(moreData, id: \.self) { newResult in
+//                    print(newResult)
+//                }
+//                for x in results {
+//                    print(x.Media?.first?.MediaURL)
+//                }
+//                for y in [media] {
+////                    let newY = [Array<Any>].self
+////                    newY.append(media.first?.MediaURL)
+//                    
+//                    print(y.first?.MediaURL)
+//                }
+//                print(media)
+//                self.media = fetchedData
+
+//                for moreData in self.listings {
+//                    print([moreData.value?.first?.Media])
+//                }
+//                print(moreData)
+//                print("The JSON response is \(json: data)")
+                 
             }
         } catch {
             print("invalid data")
