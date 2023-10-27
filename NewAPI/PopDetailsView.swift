@@ -53,9 +53,9 @@ struct PopDestDetailsView: View {
 ////                        print(media)
 //                    }
 
-                    ForEach(media, id: \.MediaCategory) { images in
+                    ForEach(media, id: \.MediaKey) { media in
                         
-                        KFImage(URL(string: (images.MediaURL ?? "")))
+                        KFImage(URL(string: (media.MediaURL ?? "")))
                             .resizable()
                             .scaledToFit()
                     }
@@ -90,8 +90,8 @@ struct PopDestDetailsView: View {
 //                    Text(value.first?.Media?.first?.MediaURL ?? "")
 //                }
             }
-                .frame(height:320)
-                .tabViewStyle(.page)
+//                .frame(height:320)
+//                .tabViewStyle(.page)
             }
 //            TabView {
 //                KFImage(URL(string: value.first?.Media?.first?.MediaURL ?? ""))
@@ -181,19 +181,19 @@ struct MapView: UIViewRepresentable {
             leftView.frame = CGRect(x: 0, y: 0, width: 20, height: 20)
             leftView.backgroundColor = .blue
             annoView.leftCalloutAccessoryView = leftView
-            //Add a LEFT IMAGE VIEW
+
+//           Add a LEFT IMAGE VIEW
 //            var leftIconView = UIImageView()
-////            leftIconView.contentMode = .scaleAspectFill
-////            leftIconView.contentMode = .scaleAspectFill
+//            leftIconView.contentMode = .scaleAspectFill
+//            leftIconView.contentMode = .scaleAspectFill
 //            let newBounds = CGRect(x:0.0, y:0.0, width:54.0, height:54.0)
 //            leftIconView.bounds = newBounds
 //            leftIconView.clipsToBounds = true
-//
-////            let thumbnailImageUrl =    KFImage(URL(string:listing.StandardFields.Photos?.first?.Uri300 ?? ""))
-//
+
+//            let thumbnailImageUrl =    KFImage(URL(string:listing.StandardFields.Photos?.first?.Uri300 ?? ""))
+
 //            leftIconView = KFImage(URL(string:listing.StandardFields.Photos?.first?.Uri300 ?? ""))
-//
-//
+
 //            annoView.leftCalloutAccessoryView = leftIconView
             
             return annoView

@@ -47,6 +47,7 @@ struct Listing: Codable {
        }
 }
 extension Value: Equatable {}
+
 struct Value: Codable {
     static func == (lhs: Value, rhs: Value) -> Bool {
         return lhs.id == rhs.id
@@ -96,6 +97,34 @@ struct Value: Codable {
 
         var MediaCategory: String?
         var MediaURL: String?
+        var MediaKey: String?
+        
+        enum CodingKeys: String, CodingKey {
+            case MediaCategory = "MediaCategory"
+//                case Permission = "Permission"
+//                case LongDescription = "LongDescription"
+//                case Order = "Order"
+//                case PreferredPhotoYN = "PreferredPhotoYN"
+//                case ShortDescription = "ShortDescription"
+            case MediaURL = "MediaURL"
+//                case MediaHTML = "MediaHTML"
+//                case OriginatingSystemMediaKey = "OriginatingSystemMediaKey"
+            case MediaKey = "MediaKey"
+//                case ResourceRecordID = "ResourceRecordID"
+//                case ResourceRecordKey = "ResourceRecordKey"
+//                case odataId = "@odata.id"
+            
+            
+        }
+        init(from decoder: Decoder) throws {
+            let container = try decoder.container(keyedBy: CodingKeys.self)
+            self.MediaCategory = try? container.decode(String.self, forKey: .MediaCategory)
+            self.MediaURL = try? container.decode(String.self, forKey: .MediaURL)
+            self.MediaKey = try? container.decode(String.self, forKey: .MediaKey)
+        }
+
     }
+   
 }
+
 
