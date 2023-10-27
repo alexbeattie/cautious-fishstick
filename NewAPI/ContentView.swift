@@ -28,24 +28,23 @@ struct ContentView: View {
                         NavigationLink {
                             PopDestDetailsView(value: listing, media: media)
 
-                            Text("details")
+//                            Text("details")
                         } label: {
                             VStack(alignment: .leading) {
-                                
-                                
-//                                ForEach($vm.media, id:\.MediaCategory) { items in
-//                                    Text(media.MediaURL)
-//                                }
-                                
-                                AsyncImage(url: URL(string: listing.Media?.first?.MediaURL ?? "")) { image in
-                                    image
-                                        .resizable()
-                                        .scaledToFill()
-                                        .frame(width:400, height:200)
-                                        .clipped()
-                                    
-                                } placeholder: {
-                                    ProgressView()
+                                                                
+                                HStack {
+                                    AsyncImage(url: URL(string: listing.Media?.first?.MediaURL ?? "")) { image in
+                                        image
+                                            .resizable()
+                                            .scaledToFill()
+                                            .frame(width:400, height:200)
+                                            .clipped()
+                                            .ignoresSafeArea()
+
+                                        
+                                    } placeholder: {
+                                        ProgressView()
+                                    }
                                 }
                                 ZStack {
                                     VStack (alignment: .leading, spacing: 12) {
@@ -56,8 +55,8 @@ struct ContentView: View {
                                                     .font(.system(size: 16, weight: .regular))
 //                                                    .foregroundColor(Color(.red))
                                                 HStack {
-                                                    //                                            Text("\(listing.Model ?? "Not Named")")
-                                                    //                                                .font(.system(size: 14, weight: .regular))
+                                                                                                Text("\(listing.Model ?? "Not Named")")
+                                                                                                    .font(.system(size: 14, weight: .regular))
                                                     //                                                .foregroundColor(Color(.gray))
                                                     Text(listing.MlsStatus ?? "")
                                                         .font(.system(size: 14, weight: .heavy))
@@ -80,6 +79,7 @@ struct ContentView: View {
                                                         .font(.system(size: 14, weight: .regular))
 //                                                        .foregroundColor(Color(.blue))
                                                     Text(listing.formattedLaunchDate)
+                                                        .font(.system(size: 14, weight: .regular))
                                                     
                                                     
                                                 }
@@ -101,9 +101,9 @@ struct ContentView: View {
                                         Link ("next", destination: URL(string: topListing.odataNextLink!)!)
                                     }
                 }
-                .navigationTitle("Listings")
-                .navigationBarTitleDisplayMode(.inline)
-                
+//                .navigationTitle("Listings")
+//                .navigationBarTitleDisplayMode(.automatic)
+                .ignoresSafeArea()  
                 .background(.darkBackground)
                 .preferredColorScheme(.dark)
             }

@@ -92,27 +92,14 @@ struct Value: Codable {
         ListingContractDate?.formatted(date: .abbreviated, time: .omitted) ?? ""
     }
     struct Media: Codable {
-//        var id = UUID()
-//        var id: String { return self.MediaCategory ?? "" }
-
         var MediaCategory: String?
         var MediaURL: String?
         var MediaKey: String?
         
         enum CodingKeys: String, CodingKey {
             case MediaCategory = "MediaCategory"
-//                case Permission = "Permission"
-//                case LongDescription = "LongDescription"
-//                case Order = "Order"
-//                case PreferredPhotoYN = "PreferredPhotoYN"
-//                case ShortDescription = "ShortDescription"
             case MediaURL = "MediaURL"
-//                case MediaHTML = "MediaHTML"
-//                case OriginatingSystemMediaKey = "OriginatingSystemMediaKey"
             case MediaKey = "MediaKey"
-//                case ResourceRecordID = "ResourceRecordID"
-//                case ResourceRecordKey = "ResourceRecordKey"
-//                case odataId = "@odata.id"
             
             
         }

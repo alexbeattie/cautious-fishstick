@@ -57,68 +57,24 @@ struct PopDestDetailsView: View {
                         
                         KFImage(URL(string: (media.MediaURL ?? "")))
                             .resizable()
-                            .scaledToFit()
+                            .scaledToFill()
                     }
                     
-//                    ForEach(media, id: \.id) { images in
-//                        KFImage(URL(string: (images.MediaURL ?? "")))
-//                            .resizable()
-//                            .scaledToFit()
-//                    }
-//                    ForEach(value, id:\.ListingId) { image in
-//                        
-//                        
-//                        //                                            Text(value.first?.Media?.first?.MediaURL ?? "")
-//                        Text(media.first?.MediaURL ?? "")
-//                        
-////                    ForEach(media, id: \.MediaCategory) { mediastuff in
-////                        
-////                        
-////                        AsyncImage(url: URL(string: value.first?.Media?.first?.MediaURL ?? "")) { image in
-////                            image
-////                                .resizable()
-////                                .scaledToFill()
-////                                .frame(width:400, height:200)
-////                            
-////                        } placeholder: {
-////                            ProgressView()
-////                        }
-////                        
-////                        
-////                        Text(mediastuff.MediaURL ?? "")
-////                    }
-//                    Text(value.first?.Media?.first?.MediaURL ?? "")
-//                }
+//                   
             }
-//                .frame(height:320)
-//                .tabViewStyle(.page)
+
             }
-//            TabView {
-//                KFImage(URL(string: value.first?.Media?.first?.MediaURL ?? ""))
-//                KFImage(URL(string: value.first?.Media?.first?.MediaURL ?? ""))
-////                KFImage(URL(string: value.first. ?? ""))
-//
-////                AsyncImage(url: URL(string: value.first?.Media?.first?.MediaURL ?? "")) { image in
-////                    image
-////                        .resizable()
-////                        .scaledToFill()
-////                        .frame(width:400, height:200)
-////                    
-////                } placeholder: {
-////                    ProgressView()
-////                }
-//                
-////                .frame(width: 400,
-////                       height:200)
-////                .clipped()
-//            }
+
             .frame(height:320)
             .tabViewStyle(.page)
+       
             Divider()
             VStack {
                 Text("aex")
                     .font(.headline)
                   .foregroundColor(Color(.green))
+                Text(value.first?.MlsStatus ?? "")
+                    .font(.system(size: 14, weight: .heavy))
 
             }
             Text(value.first?.PublicRemarks ?? "")
@@ -143,7 +99,7 @@ struct PopDestDetailsView: View {
                 .edgesIgnoringSafeArea(.bottom)
         }
         .ignoresSafeArea()
-        .edgesIgnoringSafeArea(.bottom)
+//        .edgesIgnoringSafeArea(.bottom)
     }
 }
 
