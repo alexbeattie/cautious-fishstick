@@ -10,12 +10,9 @@ import SwiftUI
 @main
 struct NewAPIApp: App {
     var body: some Scene {
-        
         WindowGroup {
-         
             ContentView(listing: .init(), topListing: .init(odataContext: "", odataNextLink: "", odataCount: 0, value: nil), media: []
             )
-            
         }
     }
 }

@@ -100,14 +100,12 @@ struct Value: Codable {
             case MediaCategory = "MediaCategory"
             case MediaURL = "MediaURL"
             case MediaKey = "MediaKey"
-            
-            
         }
         init(from decoder: Decoder) throws {
             let container = try decoder.container(keyedBy: CodingKeys.self)
-            self.MediaCategory = try? container.decode(String.self, forKey: .MediaCategory)
-            self.MediaURL = try? container.decode(String.self, forKey: .MediaURL)
-            self.MediaKey = try? container.decode(String.self, forKey: .MediaKey)
+            MediaCategory = try? container.decode(String.self, forKey: .MediaCategory)
+            MediaURL = try? container.decode(String.self, forKey: .MediaURL)
+            MediaKey = try? container.decode(String.self, forKey: .MediaKey)
         }
 
     }

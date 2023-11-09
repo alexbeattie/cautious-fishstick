@@ -10,6 +10,7 @@ import SwiftUI
 struct RowData: View {
     
     var listing: Value
+     
 //    let results: Listing
     var body: some View {
         
@@ -35,10 +36,9 @@ struct RowData: View {
                             .scaledToFit()
 
                             .foregroundColor(Color(.label))
-//                            .frame(maxWidth: .infinity)
+
                             .minimumScaleFactor(0.01)
                             .lineLimit(1)
-//                            .background(Color(.red))
                         Text("Price")
                             .font(.system(size: 14, weight: .regular))
                             .foregroundColor(.gray)
